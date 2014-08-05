@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>RocketDude [Made with LREditor]</title>
+  <link href="css/app.css" rel="stylesheet">
+</head>
+<body>
+  <div id="content">
+    <div id="phaser"></div>
+    <hr/>
+    <div>Use arrows Up/Down to move up and down.</div>
+    <hr/>
+    <div>Made with <a href="http://ladybugriders.com/lreditor/">LREditor</a>.</div>
+    <div>See our first tutorial video <a href="https://www.youtube.com/watch?v=DsGIp_p90CE">here.</a></div>
+  </div>
+
+  <!-- PHASER -->
+  <script src="../shared/js/lib/phaser.js"></script>
+  
+  <!-- LADYBUG RIDERS -->
+  <!-- Shared -->
+  <script src="../shared/js/dev/lr.js"></script>
+  <script src="../shared/js/dev/phaser/entity/button.js"></script>
+  <script src="../shared/js/dev/phaser/entity/sprite.js"></script>
+  <script src="../shared/js/dev/phaser/entity/tilesprite.js"></script>
+  <script src="../shared/js/dev/phaser/entity/group.js"></script>
+  <script src="../shared/js/dev/phaser/entity/text.js"></script>
+  <script src="../shared/js/dev/phaser/game.js"></script>
+  <script src="../shared/js/dev/phaser/states/state.js"></script>
+  <script src="../shared/js/dev/phaser/states/state_boot.js"></script>
+  <script src="../shared/js/dev/phaser/states/state_loader.js"></script>
+  <script src="../shared/js/dev/phaser/states/state_level.js"></script>
+  <script src="../shared/js/dev/phaser/gameobject.js"></script>
+  <script src="../shared/js/dev/phaser/levelutilities.js"></script>
+  <script src="../shared/js/dev/phaser/levelimporter.js"></script>
+  <script src="../shared/js/dev/phaser/levelimportergame.js"></script>
+  <script src="../shared/js/dev/phaser/utils.js"></script>
+  <script src="../shared/js/dev/phaser/collision_manager.js"></script>
+  <!-- behaviours -->
+  <script src="../shared/js/dev/phaser/behaviour/behaviour.js"></script>
+    <!-- button -->
+    <script src="../shared/js/dev/phaser/behaviour/button.js"></script>  
+    <!-- triggers -->
+    <script src="../shared/js/dev/phaser/behaviour/trigger.js"></script>  
+    <script src="../shared/js/dev/phaser/behaviour/trigger_change_level.js"></script>  
+    <script src="../shared/js/dev/phaser/behaviour/trigger_cutscene.js"></script>  
+    <script src="../shared/js/dev/phaser/trigger/trigger_message_object.js"></script>
+  <!-- plugins -->
+  <script src="../shared/js/dev/phaser/plugin/pollinator.js"></script>
+  <script src="../shared/js/dev/phaser/plugin/input_manager.js"></script>
+  <script src="../shared/js/dev/phaser/plugin/cutscene_manager.js"></script>    
+  <script src="../shared/js/dev/phaser/plugin/dialog_manager.js"></script> 
+  <!-- ui -->
+  <script src="../shared/js/dev/phaser/ui/dialog_box.js"></script>
+   
+
+  <!-- MAIN -->
+  <script src="js/dev/main.js"></script>
+
+  <!-- GAME -->
+  <script src="assets/behaviours/bullet.js"></script>
+
+</body>
+</html>

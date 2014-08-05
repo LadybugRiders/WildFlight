@@ -1,0 +1,1 @@
+{"bullet":{"collisions":["enemy","ground"]},"death":{"collisions":["player"]},"default":{"collisions":["ground","player"]},"enemy":{"collisions":["bullet","player"]},"ground":{"collisions":["bullet","default","player"]},"player":{"collisions":["death","default","enemy","ground","trigger"]},"trigger":{"collisions":["player"]}}
