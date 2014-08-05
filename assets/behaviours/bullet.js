@@ -2,8 +2,10 @@
 
 //>>LREditor.Behaviour.name: Bullet
 
-var Bullet = function(_gameobject) {
+var Bullet = function(_gameobject, _direction) {
 	LR.Behaviour.call(this, _gameobject);
+
+  this.direction = _direction;
 };
 
 Bullet.prototype = Object.create(LR.Behaviour.prototype);
@@ -12,45 +14,60 @@ Bullet.prototype.constructor = Bullet;
 Bullet.prototype.start = function() {
   this.hp = 1;
   this.strength = 1;
-  this.range = 300;
+  this.range = 200;
 
   // set max speed
-  this.speed = new Phaser.Point(200, 0);
+  this.maxSpeed = 250;
+  // set speed
+  this.speed = new Phaser.Point(
+    this.direction.x * this.maxSpeed,
+    this.direction.y * this.maxSpeed
+  );
 
   // set finish to false
   this.finish = false;
 
   this.player = this.go.game.state.getCurrentState().getGameObjectByName("player");
+
+  this.tmpVector1 = new Phaser.Point();
+  this.tmpVector2 = new Phaser.Point();
 };
 
 Bullet.prototype.update = function() {
   // if Dude doesn't cross the finish line
   if (this.finish == false) {
     this.go.body.moveRight(this.speed.x);
+    this.go.body.moveDown(this.speed.y);
 
     if (this.player) {
-      var distanceX = Math.abs(this.go.body.x - this.player.body.x);
-      if (distanceX > this.range) {
-        this.go.entity.destroy();
+      this.tmpVector1.set(this.go.body.x, this.go.body.y);
+      this.tmpVector2.set(this.player.body.x, this.player.body.y);
+
+      var distance = this.tmpVector1.distance(this.tmpVector2);
+      if (distance > this.range) {
+        this.entity.destroy();
       }
     }
   }
 };
 
 Bullet.prototype.onBeginContact = function(_otherBody, _myShape, _otherShape, _equation) {
-  var go = _otherBody.sprite.go;
-  console.log("Layer: " + go.layer);
+  try {
+    var go = _otherBody.go;
 
-  var behaviour = go.getBehaviour(Enemy);
-  if (behaviour) {
-    console.log("ENEMY: " + behaviour.go.name);
-    behaviour.takesDamage(this.strength);
+    var behaviour = go.getBehaviour(Enemy);
+    if (behaviour) {
+      behaviour.takesDamage(this.strength);
+    }
+  } catch(e) {
+    console.error(e);
   }
-
-  //this.go.entity.destroy();
+    
+  
+  this.go.entity.destroy();
 };
 
-Bullet.SpawnBullet = function(_game, _x, _y) {
+Bullet.SpawnBullet = function(_game, _x, _y, _direction) {
   var bullet = new LR.Entity.Sprite(
     _game,
     0, 0,
@@ -65,7 +82,7 @@ Bullet.SpawnBullet = function(_game, _x, _y) {
   bullet.body.data.gravityScale = 0;
   bullet.body.reset(_x, _y);
 
-  var behaviour = new Bullet(bullet.go);
+  var behaviour = new Bullet(bullet.go, _direction);
   bullet.go.addBehaviour(behaviour);
 
   bullet.start();

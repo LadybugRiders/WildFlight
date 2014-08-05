@@ -13,12 +13,12 @@ Player.prototype.start = function() {
   this.hp = 5;
 
   // set max speed
-  this.speed = new Phaser.Point(75, 100);
+  this.speed = new Phaser.Point(125, 100);
 
   // set camera to follow Dude
   this.go.game.camera.follow(this.go.entity);
   //set the deadzone
-  this.go.game.camera.deadzone = new Phaser.Rectangle(50, 0, 200, 360);
+  this.go.game.camera.deadzone = new Phaser.Rectangle(0, 0, 120, 360);
 
   // enable cursors
   this.cursors = this.go.game.input.keyboard.createCursorKeys();
@@ -26,8 +26,16 @@ Player.prototype.start = function() {
   // set finish to false
   this.finish = false;
 
-  this.cooldown = 500;
-  this.currentCooldown = 0;
+  this.safeCooldown = 2000;
+  this.currentSafeCooldown = 0;
+
+  this.fireCooldown = 500;
+  this.currentFireCooldown = 0;
+
+  this.bulletDirection = new Phaser.Point();
+
+  var pollinator = this.go.game.pollinator;
+  if (pollinator) pollinator.on("playerFinishes", this.callbackFinish, this);
 };
 
 Player.prototype.update = function() {
@@ -35,40 +43,134 @@ Player.prototype.update = function() {
 
   // if the player doesn't cross the finish line
   if (this.finish == false) {
+    // always move to the right
+    this.go.body.moveRight(this.speed.x);
+
     this.updateControls();
 
     if (this.hp <= 0) {
       this.stop();
     }
 
-    this.currentCooldown -= dt;
-    if (this.currentCooldown < 0) this.currentCooldown = 0;
-  }
-};
-
-Player.prototype.updateControls = function() {
-  this.go.body.moveRight(this.speed.x);
-
-  if (this.cursors.up.isDown) {
-    this.go.body.moveUp(this.speed.y);
-  } else if (this.cursors.down.isDown) {
-    this.go.body.moveDown(this.speed.y);
+    this.updateCooldowns();
   } else {
     this.go.body.moveUp(0);
     this.go.body.moveDown(0);
   }
+};
 
-  if (this.cursors.right.isDown) {
-    if (this.currentCooldown <= 0) {
-      var bullet = Bullet.SpawnBullet(
-        this.go.game,
-        this.go.body.x,
-        this.go.body.y
-      );
+Player.prototype.updateControls = function() {
 
-      this.currentCooldown = this.cooldown;
+  var pointerLeft = this.getPointerLeft();
+  if (pointerLeft) {
+    if (pointerLeft.isDown) {
+      if (this.go.game.camera.y + pointerLeft.y < this.go.body.y) {
+        this.go.body.moveUp(this.speed.y);
+      } else if (pointerLeft.y > this.go.body.y) {
+        this.go.body.moveDown(this.speed.y);
+      } else {
+        this.go.body.moveUp(0);
+        this.go.body.moveDown(0);
+      }
+    }
+  } else {
+    if (this.cursors.up.isDown) {
+      this.go.body.moveUp(this.speed.y);
+    } else if (this.cursors.down.isDown) {
+      this.go.body.moveDown(this.speed.y);
+    } else {
+      this.go.body.moveUp(0);
+      this.go.body.moveDown(0);
     }
   }
+  
+  
+
+  if (this.currentFireCooldown <= 0) {
+    var pointerRight = this.getPointerRight();
+
+    if (pointerRight) {
+      if (pointerRight.isDown) {
+        this.bulletDirection.set(
+          this.go.game.camera.x + pointerRight.x - this.go.body.x,
+          this.go.game.camera.y + pointerRight.y - this.go.body.y
+        ).normalize();
+
+        var direction = new Phaser.Point(1, 0);
+        var bullet = Bullet.SpawnBullet(
+          this.go.game,
+          this.go.body.x,
+          this.go.body.y,
+          this.bulletDirection
+        );
+
+        this.currentFireCooldown = this.fireCooldown;
+      }
+    }
+    
+  }
+};
+
+Player.prototype.updateCooldowns = function() {
+  var dt = this.go.game.time.elapsed;
+
+  this.currentSafeCooldown -= dt;
+  if (this.currentSafeCooldown < 0) this.currentSafeCooldown = 0;
+
+  this.currentFireCooldown -= dt;
+  if (this.currentFireCooldown < 0) this.currentFireCooldown = 0;
+};
+
+Player.prototype.getPointerLeft = function() {
+  var input = this.go.game.input;
+
+  var pointerLeft = null;
+
+  if (input.mousePointer.isDown) {
+    if (input.mousePointer.x < 200) {
+      pointerLeft = input.mousePointer;
+    }
+  }
+
+  if (input.pointer1.isDown) {
+    if (input.pointer1.x < 200) {
+      pointerLeft = input.pointer1;
+    }
+  }
+
+  if (input.pointer2.isDown) {
+    if (input.pointer2.x < 200) {
+      pointerLeft = input.pointer1;
+    }
+  }
+
+  return pointerLeft;
+};
+
+Player.prototype.getPointerRight = function() {
+  var input = this.go.game.input;
+
+  var pointerRight = null;
+
+  if (input.mousePointer.isDown) {
+    if (input.mousePointer.x > 200) {
+      pointerRight = input.mousePointer;
+    }
+  }
+
+  if (input.pointer1.isDown) {
+    if (input.pointer1.x > 200) {
+      pointerRight = input.pointer1;
+    }
+  }
+
+  if (input.pointer2.isDown) {
+    if (input.pointer2.x > 200) {
+      pointerRight = input.pointer1;
+    }
+  }
+
+  return pointerRight;
 };
 
 Player.prototype.stop = function() {
@@ -81,11 +183,24 @@ Player.prototype.stop = function() {
 };
 
 Player.prototype.takesDamage = function(_damages) {
-  this.hp -= _damages;
-  if (this.hp < 0) {
-    this.hp = 0;
-  }
+  if (this.currentSafeCooldown <= 0) {
+    this.hp -= _damages;
+    if (this.hp < 0) {
+      this.hp = 0;
+    }
 
-  var pollinator = this.go.game.pollinator;
-  if (pollinator) pollinator.dispatch("playerTakesDamage");
+    var pollinator = this.go.game.pollinator;
+    if (pollinator) pollinator.dispatch("playerTakesDamage");
+
+    this.go.blink = new LR.FX.Blink(this.go);
+    this.go.blink.activate(2, this.safeCooldown);
+
+    this.currentSafeCooldown = this.safeCooldown;
+  }
+};
+
+Player.prototype.callbackFinish = function() {
+  this.finish = true;
+
+  console.log("FINISH!");
 };

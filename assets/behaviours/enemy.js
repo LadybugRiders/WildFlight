@@ -42,13 +42,15 @@ Enemy.prototype.takesDamage = function(_damages) {
   }
 };
 
-Enemy.prototype.onBeginContact = function(_otherBody, _myShape, _otherShape, _equation){
-  var go = _otherBody.sprite.go;
+Enemy.prototype.onBeginContact = function(_otherBody, _myShape, _otherShape, _equation) {
+  if (_otherBody) {
+    var go = _otherBody.go;
 
-  if (go.name == "player") {
-    var behaviour = go.getBehaviour(Player);
-    if (behaviour) {
-      behaviour.takesDamage(this.strength);
+    if (go.name == "player") {
+      var behaviour = go.getBehaviour(Player);
+      if (behaviour) {
+        behaviour.takesDamage(this.strength);
+      }
     }
   }
-}
+};
