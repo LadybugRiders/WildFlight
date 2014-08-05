@@ -39,7 +39,7 @@ Bullet.prototype.update = function() {
 
 Bullet.prototype.onBeginContact = function(_otherBody, _myShape, _otherShape, _equation) {
   var go = _otherBody.sprite.go;
-  console.log(go.layer);
+  console.log("Layer: " + go.layer);
 
   var behaviour = go.getBehaviour(Enemy);
   if (behaviour) {
