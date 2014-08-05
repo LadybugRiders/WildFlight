@@ -64,10 +64,17 @@ Player.prototype.updateControls = function() {
   var pointerLeft = this.getPointerLeft();
   if (pointerLeft) {
     if (pointerLeft.isDown) {
-      if (this.go.game.camera.y + pointerLeft.y < this.go.body.y) {
-        this.go.body.moveUp(this.speed.y);
-      } else if (pointerLeft.y > this.go.body.y) {
-        this.go.body.moveDown(this.speed.y);
+      var deltaY = Math.round(this.go.game.camera.y + pointerLeft.y - this.go.body.y);
+
+      var absDeltaY = Math.abs(deltaY);
+
+      // avoid shake
+      if (absDeltaY > 2) {
+        if (deltaY < 0) {
+          this.go.body.moveUp(this.speed.y);
+        } else if (deltaY > 0) {
+          this.go.body.moveDown(this.speed.y);
+        }
       } else {
         this.go.body.moveUp(0);
         this.go.body.moveDown(0);
@@ -83,8 +90,6 @@ Player.prototype.updateControls = function() {
       this.go.body.moveDown(0);
     }
   }
-  
-  
 
   if (this.currentFireCooldown <= 0) {
     var pointerRight = this.getPointerRight();
@@ -140,7 +145,7 @@ Player.prototype.getPointerLeft = function() {
 
   if (input.pointer2.isDown) {
     if (input.pointer2.x < 200) {
-      pointerLeft = input.pointer1;
+      pointerLeft = input.pointer2;
     }
   }
 
@@ -166,7 +171,7 @@ Player.prototype.getPointerRight = function() {
 
   if (input.pointer2.isDown) {
     if (input.pointer2.x > 200) {
-      pointerRight = input.pointer1;
+      pointerRight = input.pointer2;
     }
   }
 
