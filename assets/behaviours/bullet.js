@@ -24,6 +24,11 @@ Bullet.prototype.start = function() {
     this.direction.y * this.maxSpeed
   );
 
+  // set rotation
+  var rotation = Math.asin(this.direction.x);
+  if (this.direction.y > 0) rotation = Math.PI - rotation;
+  this.go.body.rotation = rotation;
+
   // set finish to false
   this.finish = false;
 

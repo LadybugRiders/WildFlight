@@ -20,7 +20,19 @@ LifeManager.prototype.update = function() {
 
 LifeManager.prototype.removeLetter = function() {
   var letter = this.getLastLetter();
-  if (letter) letter.destroy();
+  if (letter) {
+    var tween = this.go.game.add.tween(letter.scale).to(
+      {x: 0, y: 0},
+      1500,
+      Phaser.Easing.Exponential.InOut
+    );
+
+    tween.onComplete.add(function() {
+      letter.destroy();
+    });
+
+    tween.start();
+  }
 };
 
 LifeManager.prototype.getLastLetter = function() {
