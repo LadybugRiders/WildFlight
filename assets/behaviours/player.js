@@ -96,16 +96,20 @@ Player.prototype.updateControls = function() {
 
     if (pointerRight) {
       if (pointerRight.isDown) {
+        console.log(this.go.body);
+        var spawnX = this.go.body.x + this.go.entity.width * 0.5;
+        var spawnY = this.go.body.y;
+
         this.bulletDirection.set(
-          this.go.game.camera.x + pointerRight.x - this.go.body.x,
-          this.go.game.camera.y + pointerRight.y - this.go.body.y
+          this.go.game.camera.x + pointerRight.x - spawnX,
+          this.go.game.camera.y + pointerRight.y - spawnY
         ).normalize();
 
         var direction = new Phaser.Point(1, 0);
         var bullet = Bullet.SpawnBullet(
           this.go.game,
-          this.go.body.x,
-          this.go.body.y,
+          spawnX,
+          spawnY,
           this.bulletDirection
         );
 
