@@ -24,7 +24,7 @@ Player.prototype.start = function() {
   this.cursors = this.go.game.input.keyboard.createCursorKeys();
 
   // set finish to false
-  this.finish = false;
+  this.finish = true;
 
   this.safeCooldown = 2000;
   this.currentSafeCooldown = 0;
@@ -36,6 +36,8 @@ Player.prototype.start = function() {
 
   var pollinator = this.go.game.pollinator;
   if (pollinator) pollinator.on("playerFinishes", this.callbackFinish, this);
+
+  //Phaser.Canvas.setSmoothingEnabled(this.go.game.context, false);
 };
 
 Player.prototype.update = function() {
