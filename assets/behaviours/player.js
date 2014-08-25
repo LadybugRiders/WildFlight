@@ -177,7 +177,7 @@ Player.prototype.getPointerRight = function() {
 
   var pointerRight = null;
 
-  var limit = this.go.body.x - this.go.game.camera.x;
+  var limit = (this.go.body.x + this.entity.width) - this.go.game.camera.x;
 
   if (input.mousePointer.isDown) {
     if (input.mousePointer.x > limit) {

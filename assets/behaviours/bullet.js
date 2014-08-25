@@ -27,7 +27,7 @@ Bullet.prototype.start = function() {
   // set rotation
   var rotation = Math.asin(this.direction.x);
   if (this.direction.y > 0) rotation = Math.PI - rotation;
-  this.go.body.rotation = rotation;
+  //this.go.body.rotation = rotation;
 
   // set finish to false
   this.finish = false;
@@ -76,10 +76,12 @@ Bullet.SpawnBullet = function(_game, _x, _y, _direction) {
   var bullet = new LR.Entity.Sprite(
     _game,
     0, 0,
-    "bullet",
+    "bubble",
     "bullet"
   );
 
+  bullet.width = 15;
+  bullet.height = 15;
   bullet.go.enablePhysics(Phaser.Physics.P2.Body.DYNAMIC);
   bullet.go.changeLayer("bullet");
   bullet.go.enableSensor();
@@ -87,6 +89,7 @@ Bullet.SpawnBullet = function(_game, _x, _y, _direction) {
   bullet.body.data.gravityScale = 0;
   bullet.body.reset(_x, _y);
 
+  //var behaviour = new Bullet(bullet.go, _direction);
   var behaviour = new Bullet(bullet.go, _direction);
   bullet.go.addBehaviour(behaviour);
 
