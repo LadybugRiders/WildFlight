@@ -111,8 +111,8 @@ Player.prototype.updateControls = function() {
         // set attack animation
         this.go.entity.play("attack");
 
-        var spawnX = this.go.body.x + this.go.entity.width * 0.5;
-        var spawnY = this.go.body.y;
+        var spawnX = this.go.body.x + this.go.entity.width * 0.5 - 5;
+        var spawnY = this.go.body.y + 25;
 
         this.bulletDirection.set(
           this.go.game.camera.x + pointerRight.x - spawnX,
