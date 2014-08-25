@@ -24,7 +24,7 @@ Player.prototype.start = function() {
   this.cursors = this.go.game.input.keyboard.createCursorKeys();
 
   // set finish to false
-  this.finish = true;
+  this.finish = false;
 
   this.safeCooldown = 2000;
   this.currentSafeCooldown = 0;
@@ -36,6 +36,16 @@ Player.prototype.start = function() {
 
   var pollinator = this.go.game.pollinator;
   if (pollinator) pollinator.on("playerFinishes", this.callbackFinish, this);
+
+  // set animation callbacks
+  console.log(this.entity.animations.getAnimation("attack"));
+  this.entity.animations.getAnimation("attack").onComplete.add(function() {
+    this.entity.play("fly");
+  }, this);
+
+  this.entity.animations.getAnimation("damage").onComplete.add(function() {
+    this.entity.play("fly");
+  }, this);
 
   //Phaser.Canvas.setSmoothingEnabled(this.go.game.context, false);
 };
@@ -98,7 +108,9 @@ Player.prototype.updateControls = function() {
 
     if (pointerRight) {
       if (pointerRight.isDown) {
-        console.log(this.go.body);
+        // set attack animation
+        this.go.entity.play("attack");
+
         var spawnX = this.go.body.x + this.go.entity.width * 0.5;
         var spawnY = this.go.body.y;
 
@@ -137,20 +149,22 @@ Player.prototype.getPointerLeft = function() {
 
   var pointerLeft = null;
 
+  var limit = this.go.body.x - this.go.game.camera.x;
+
   if (input.mousePointer.isDown) {
-    if (input.mousePointer.x < 200) {
+    if (input.mousePointer.x < limit) {
       pointerLeft = input.mousePointer;
     }
   }
 
   if (input.pointer1.isDown) {
-    if (input.pointer1.x < 200) {
+    if (input.pointer1.x < limit) {
       pointerLeft = input.pointer1;
     }
   }
 
   if (input.pointer2.isDown) {
-    if (input.pointer2.x < 200) {
+    if (input.pointer2.x < limit) {
       pointerLeft = input.pointer2;
     }
   }
@@ -163,20 +177,22 @@ Player.prototype.getPointerRight = function() {
 
   var pointerRight = null;
 
+  var limit = this.go.body.x - this.go.game.camera.x;
+
   if (input.mousePointer.isDown) {
-    if (input.mousePointer.x > 200) {
+    if (input.mousePointer.x > limit) {
       pointerRight = input.mousePointer;
     }
   }
 
   if (input.pointer1.isDown) {
-    if (input.pointer1.x > 200) {
+    if (input.pointer1.x > limit) {
       pointerRight = input.pointer1;
     }
   }
 
   if (input.pointer2.isDown) {
-    if (input.pointer2.x > 200) {
+    if (input.pointer2.x > limit) {
       pointerRight = input.pointer2;
     }
   }
@@ -195,6 +211,8 @@ Player.prototype.stop = function() {
 
 Player.prototype.takesDamage = function(_damages) {
   if (this.currentSafeCooldown <= 0) {
+    this.entity.play("damage");
+
     this.hp -= _damages;
     if (this.hp < 0) {
       this.hp = 0;
