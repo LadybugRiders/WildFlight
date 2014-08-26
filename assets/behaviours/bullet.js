@@ -32,7 +32,7 @@ Bullet.prototype.start = function() {
   // set finish to false
   this.finish = false;
 
-  this.player = this.go.game.state.getCurrentState().getGameObjectByName("player");
+  this.player = this.go.game.state.getCurrentState().getGameObjectByName("pelo");
 
   this.tmpVector1 = new Phaser.Point();
   this.tmpVector2 = new Phaser.Point();
@@ -57,19 +57,26 @@ Bullet.prototype.update = function() {
 };
 
 Bullet.prototype.onBeginContact = function(_otherBody, _myShape, _otherShape, _equation) {
+  var destroy = true;
+
   try {
     var go = _otherBody.go;
 
     var behaviour = go.getBehaviour(Enemy);
     if (behaviour) {
-      behaviour.takesDamage(this.strength);
+      if (behaviour.hp > 0) {
+        behaviour.takesDamage(this.strength);
+      } else {
+        destroy = false;
+      }
     }
   } catch(e) {
     console.error(e);
   }
     
-  
-  this.go.entity.destroy();
+  if (destroy == true) {
+    this.go.entity.destroy();
+  }
 };
 
 Bullet.SpawnBullet = function(_game, _x, _y, _direction) {

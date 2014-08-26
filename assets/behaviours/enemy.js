@@ -16,7 +16,7 @@ Enemy.prototype.start = function() {
   this.isEnemy = true;
 
   // set max speed
-  this.speed = new Phaser.Point(0, 0);
+  this.speed = new Phaser.Point(20, 0);
 
   // set finish to false
   this.finish = false;
@@ -27,6 +27,8 @@ Enemy.prototype.start = function() {
 Enemy.prototype.update = function() {
   // if Dude doesn't cross the finish line
   if (this.finish == false) {
+    this.go.body.moveLeft(this.speed.x);
+
     if (this.hp <= 0) {
       this.isFalling = true;
       this.go.body.data.gravityScale = 1;
@@ -59,7 +61,7 @@ Enemy.prototype.onBeginContact = function(_otherBody, _myShape, _otherShape, _eq
     var go = _otherBody.go;
 
     if (this.isFalling == false) {
-      if (go.name == "player") {
+      if (go.name == "pelo") {
         var behaviour = go.getBehaviour(Player);
         if (behaviour) {
           behaviour.takesDamage(this.strength);

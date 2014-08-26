@@ -38,7 +38,6 @@ Player.prototype.start = function() {
   if (pollinator) pollinator.on("playerFinishes", this.callbackFinish, this);
 
   // set animation callbacks
-  console.log(this.entity.animations.getAnimation("attack"));
   this.entity.animations.getAnimation("attack").onComplete.add(function() {
     this.entity.play("fly");
   }, this);
@@ -46,8 +45,6 @@ Player.prototype.start = function() {
   this.entity.animations.getAnimation("damage").onComplete.add(function() {
     this.entity.play("fly");
   }, this);
-
-  //Phaser.Canvas.setSmoothingEnabled(this.go.game.context, false);
 };
 
 Player.prototype.update = function() {
@@ -127,10 +124,11 @@ Player.prototype.updateControls = function() {
           this.bulletDirection
         );
 
+        this.entity.parent.add(bullet);
+
         this.currentFireCooldown = this.fireCooldown;
       }
     }
-    
   }
 };
 
@@ -177,7 +175,7 @@ Player.prototype.getPointerRight = function() {
 
   var pointerRight = null;
 
-  var limit = (this.go.body.x + this.entity.width) - this.go.game.camera.x;
+  var limit = (this.go.body.x + this.entity.width * 0.5) - this.go.game.camera.x;
 
   if (input.mousePointer.isDown) {
     if (input.mousePointer.x > limit) {
@@ -230,6 +228,4 @@ Player.prototype.takesDamage = function(_damages) {
 
 Player.prototype.callbackFinish = function() {
   this.finish = true;
-
-  console.log("FINISH!");
 };
