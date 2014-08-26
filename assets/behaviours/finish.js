@@ -18,7 +18,7 @@ Finish.prototype.onBeginContact = function(_otherBody, _myShape, _otherShape, _e
     Phaser.Timer.SECOND * 1,
     function() {
     	var state = this.go.game.state.getCurrentState();
-	    this.entity.game.state.start("Level", true, false, {levelName: state.levelname});
+	    this.entity.game.state.start("Level", true, false, {levelName: "level_selection"});
 	  },
     this
    );
