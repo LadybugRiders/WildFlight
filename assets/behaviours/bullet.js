@@ -80,6 +80,7 @@ Bullet.prototype.onBeginContact = function(_otherBody, _myShape, _otherShape, _e
 };
 
 Bullet.SpawnBullet = function(_game, _x, _y, _direction) {
+
   var bullet = new LR.Entity.Sprite(
     _game,
     0, 0,
@@ -89,6 +90,8 @@ Bullet.SpawnBullet = function(_game, _x, _y, _direction) {
 
   bullet.width = 15;
   bullet.height = 15;
+  bullet.x = _x;
+  bullet.y = _y;
   bullet.go.enablePhysics(Phaser.Physics.P2.Body.DYNAMIC);
   bullet.go.changeLayer("bullet");
   bullet.go.enableSensor();
