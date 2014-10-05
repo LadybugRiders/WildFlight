@@ -4,6 +4,7 @@
 
 var Enemy = function(_gameobject) {
 	LR.Behaviour.call(this, _gameobject);
+  this.entity.body.bindRotation = true;
 };
 
 Enemy.prototype = Object.create(LR.Behaviour.prototype);
