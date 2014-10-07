@@ -30,7 +30,7 @@ Enemy.prototype.update = function() {
   if (this.finish == false) {
     this.go.body.moveLeft(this.speed.x);
 
-    if (this.hp <= 0) {
+    if (this.hp <= 0 && this.isFalling == false) {
       this.isFalling = true;
       this.go.body.data.gravityScale = 1;
       this.go.body.fixedRotation = false;
@@ -38,6 +38,7 @@ Enemy.prototype.update = function() {
 
     if (this.isFalling) {
       this.go.body.rotateLeft(75);
+      this.go.body.angle -= 2;
     }
 
     if (this.go.body.x < this.go.game.camera.x) {
